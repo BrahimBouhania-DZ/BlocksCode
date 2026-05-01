@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlocksCode — تعلم البرمجة بتركيب القطع</title>
+    <meta name="description" content="منصة تفاعلية لتعلم تطوير الويب (HTML, CSS, JavaScript) بأسلوب السحب والإفلات البصري">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Highlight.js للـ Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo"><i class="fa-solid fa-cubes"></i> BlocksCode</div>
+        <nav>
+            <a href="#/" class="nav-link"><i class="fa-solid fa-home"></i> الرئيسية</a>
+            <a href="#/courses" class="nav-link"><i class="fa-solid fa-book"></i> مسار التعلم</a>
+            <a href="#/playground" class="nav-link"><i class="fa-solid fa-code"></i> الملعب الحر</a>
+            <a href="#/progress" class="nav-link"><i class="fa-solid fa-chart-line"></i> تقدمي</a>
+        </nav>
+        <div class="actions">
+            <span id="user-streak" class="badge" style="background:var(--warning); color:#000; cursor:pointer;" title="سلسلة أيام الدخول"><i class="fa-solid fa-fire"></i> <span id="streak-count">1</span></span>
+            <span id="user-xp" class="badge xp-badge">🌱 مبتدئ | ⭐ 0 XP</span>
+            <button id="theme-toggle" class="btn-icon" title="تبديل المظهر"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <main id="app">
+        <!-- يتم حقن محتوى الصفحات هنا عبر router.js -->
+    </main>
+
+    <!-- ===== قوالب الصفحات ===== -->
+
+    <!-- الرئيسية -->
+    <template id="home-template">
+        <div class="hero">
+            <div class="hero-badge"><i class="fa-solid fa-cubes"></i> BlocksCode v2.0</div>
+            <h1>تعلم البرمجة<br><span class="gradient-text">بتركيب القطع 🧩</span></h1>
+            <p>منصة تفاعلية لتعلم الويب من الواجهة إلى الخلفية بسهولة وبدون تعقيد.</p>
+            <div class="hero-stats" id="home-stats">
+                <!-- تُملأ ديناميكياً -->
+            </div>
+            <div style="display:flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <a href="#/courses" class="btn btn-primary btn-lg">
+                    <i class="fa-solid fa-graduation-cap"></i> ابدأ مسار التعلم
+                </a>
+                <a href="#/playground" class="btn btn-success btn-lg">
+                    <i class="fa-solid fa-code"></i> الملعب الحر
+                </a>
+                <a href="#/progress" class="btn btn-outline btn-lg">
+                    <i class="fa-solid fa-chart-line"></i> لوحة التقدم
+                </a>
+            </div>
+            <div class="hero-tracks">
+                <div class="track-pill" style="background:linear-gradient(135deg,#f97316,#ea580c)">🏗️ HTML</div>
+                <div class="track-pill" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">🎨 CSS</div>
+                <div class="track-pill" style="background:linear-gradient(135deg,#eab308,#ca8a04);color:#1e293b">⚡ JavaScript</div>
+            </div>
+        </div>
+    </template>
+
+    <!-- مسار التعلم -->
+    <template id="courses-template">
+        <div class="courses-container">
+            <div class="courses-header">
+                <h2>مسار تعلم تطوير الويب</h2>
+                <p>30 درساً تفاعلياً متدرجاً — من الصفر إلى بناء مشاريع حقيقية</p>
+            </div>
+            <div class="courses-list" id="courses-list"></div>
+        </div>
+    </template>
+
+    <!-- لوحة التقدم -->
+    <template id="progress-template">
+        <div class="page-container" id="progress-container">
+            <!-- تُملأ ديناميكياً بواسطة AchievementsManager.renderProgressPage() -->
+        </div>
+    </template>
+
+    <!-- المحرر (درس أو ملعب) -->
+    <template id="editor-template">
+        <div class="editor-layout" id="editor-layout">
+
+            <!-- ══════ الـ Toolbox (القسم الأيسر) ══════ -->
+            <aside class="panel toolbox" id="toolbox">
+                <!-- ترويسة اللوح مع أزرار التحكم -->
+                <div class="panel-header toolbox-header" style="flex-direction:column; align-items:stretch; padding: 10px 10px 0 10px; gap: 10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="panel-title">
+                            <i class="fa-solid fa-cubes"></i>
+                            <span class="panel-label">Tools</span>
+                        </span>
+                        <div class="panel-controls">
+                            <button class="btn-icon" id="mobile-toolbox-close" title="إغلاق (جوال)" style="display:none;">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                            <button class="btn-icon panel-collapse-btn" data-panel-toggle="toolbox"
+                                    id="panel-toggle-toolbox" title="إخفاء (Alt+B)">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="toolbox-tabs preview-tabs" style="border-bottom:none; margin:0; padding:0;">
+                        <button class="tab-btn active" onclick="switchToolboxTab('blocks')" style="flex:1;">Blocks</button>
+                        <button class="tab-btn" onclick="switchToolboxTab('dom')" style="flex:1;">DOM Tree</button>
+                    </div>
+                </div>
+                <!-- بحث البلوكات -->
+                <div class="toolbox-search-wrapper">
+                    <i class="fa-solid fa-search toolbox-search-icon"></i>
+                    <input type="search" id="toolbox-search" class="toolbox-search"
+                           placeholder="Search blocks..." autocomplete="off">
+                </div>
+                
+                <div id="toolbox-blocks-view" style="flex:1; overflow-y:auto;">
+                    <div class="toolbox-categories" id="toolbox-categories"></div>
+                </div>
+                
+                <div id="dom-tree-view" style="flex:1; overflow-y:auto; display:none; padding-top:10px;"></div>
+
+                <!-- تلميح لوحة المفاتيح -->
+                <div class="panel-kbd-hint">
+                    <kbd>Alt</kbd>+<kbd>B</kbd> إظهار/إخفاء
+                </div>
+            </aside>
+
+            <!-- مقبض تغيير حجم Toolbox -->
+            <div class="resizer" id="resizer-toolbox" title="اسحب لتغيير الحجم">
+                <div class="resizer-dots"></div>
+            </div>
+
+            <!-- ══════ مساحة العمل (القسم الأوسط) ══════ -->
+            <section class="panel workspace-container" id="workspace-container-panel">
+
+                <!-- لوحة الدرس -->
+                <div id="lesson-panel-wrapper" style="display:none;">
+                    <div class="lesson-panel" id="lesson-instructions"></div>
+                </div>
+
+                <!-- ترويسة مساحة العمل -->
+                <div class="panel-header workspace-header">
+                    <div class="panel-title">
+                        <button class="btn-icon" id="mobile-toolbox-open" title="Blocks">
+                            <i class="fa-solid fa-cubes"></i>
+                        </button>
+                        <i class="fa-solid fa-vector-square" style="opacity:.6;font-size:.9rem;"></i>
+                        <span class="panel-label">Workspace</span>
+                    </div>
+                    <div class="workspace-actions">
+                        <button class="btn-icon" onclick="AppState.undo()" title="Undo (Ctrl+Z)">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </button>
+                        <button class="btn-icon" onclick="AppState.redo()" title="Redo (Ctrl+Y)">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+
+                        <div class="action-divider"></div>
+                        
+                        <button id="btn-templates" class="btn btn-secondary btn-sm" title="Templates Library" onclick="document.getElementById('templates-modal').classList.add('active'); renderTemplatesModal();">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span class="btn-text">Templates</span>
+                        </button>
+                        
+                        <div class="action-divider"></div>
+
+                        <div class="action-divider"></div>
+
+                        <button id="btn-projects" class="btn btn-primary btn-sm" title="Projects Manager" onclick="document.getElementById('projects-modal').classList.add('active'); ProjectsManager.renderProjectsModal();">
+                            <i class="fa-solid fa-diagram-project"></i>
+                            <span class="btn-text">Projects</span>
+                        </button>
+
+                        <button id="btn-save-project" class="btn btn-warning btn-sm" title="Save Project" onclick="ProjectsManager.saveCurrentProject(AppState.workspaceBlocks)">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span class="btn-text">Save</span>
+                        </button>
+
+                        <label class="btn btn-info btn-sm" title="Import JSON">
+                            <i class="fa-solid fa-file-import"></i>
+                            <span class="btn-text">Import</span>
+                            <input type="file" id="btn-load-json" accept=".json" style="display:none;">
+                        </label>
+
+                        <button id="btn-share" class="btn btn-info btn-sm" title="Share Project">
+                            <i class="fa-solid fa-share-nodes"></i>
+                            <span class="btn-text">Share</span>
+                        </button>
+                        <button id="btn-export" class="btn btn-primary btn-sm" title="Export to ZIP" onclick="exportProjectToZip()">
+                            <i class="fa-solid fa-file-zipper"></i>
+                            <span class="btn-text">Export ZIP</span>
+                        </button>
+                        <button id="btn-check-lesson" class="btn btn-success btn-sm" style="display:none;">
+                            <i class="fa-solid fa-check"></i>
+                            <span class="btn-text">Check</span>
+                        </button>
+                        <button id="btn-clear" class="btn btn-danger btn-sm" title="Clear All">
+                            <i class="fa-solid fa-trash"></i>
+                            <span class="btn-text">Clear</span>
+                        </button>
+
+                        <div class="action-divider"></div>
+
+                        <!-- زر إعادة تعيين التخطيط -->
+                        <button class="btn-icon" onclick="PanelManager.reset()" title="إعادة تعيين التخطيط">
+                            <i class="fa-solid fa-table-columns"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- مؤشر الحفظ التلقائي -->
+                <div id="autosave-indicator">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Auto-saved
+                </div>
+
+                <!-- مساحة الإفلات -->
+                <div class="workspace" id="workspace">
+                    <div class="workspace-placeholder">
+                        Drag blocks here — or double-click any block to add it
+                    </div>
+                </div>
+
+                <!-- لوحة الخصائص (Inspector) -->
+                <div class="inspector-panel" id="inspector-panel">
+                    <div class="inspector-header">
+                        <span><i class="fa-solid fa-sliders"></i> Properties</span>
+                        <button class="btn-icon" id="close-inspector">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="inspector-body" id="inspector-body"></div>
+                    <div class="inspector-footer">
+                        <button class="btn btn-primary" id="btn-duplicate-block" style="width:100%;margin-bottom:0.5rem;">
+                            <i class="fa-solid fa-copy"></i> Duplicate
+                        </button>
+                        <button class="btn btn-danger" id="btn-delete-block" style="width:100%">
+                            <i class="fa-solid fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- مقبض تغيير حجم Preview -->
+            <div class="resizer" id="resizer-preview" title="اسحب لتغيير الحجم">
+                <div class="resizer-dots"></div>
+            </div>
+
+            <!-- ══════ المعاينة (القسم الأيمن) ══════ -->
+            <section class="panel preview-container" id="preview-panel">
+
+                <!-- ترويسة المعاينة -->
+                <div class="panel-header preview-header">
+                    <div class="panel-title">
+                        <i class="fa-solid fa-eye"></i>
+                        <span class="panel-label">Preview</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <!-- أزرار حجم المعاينة -->
+                        <div class="responsive-controls">
+                            <button class="btn-icon" onclick="setPreviewMode('mobile')"  title="Mobile 375px">
+                                <i class="fa-solid fa-mobile-screen"></i>
+                            </button>
+                            <button class="btn-icon" onclick="setPreviewMode('tablet')"  title="Tablet 768px">
+                                <i class="fa-solid fa-tablet-screen-button"></i>
+                            </button>
+                            <button class="btn-icon active-mode" onclick="setPreviewMode('desktop')" title="Desktop 100%">
+                                <i class="fa-solid fa-desktop"></i>
+                            </button>
+                        </div>
+                        <!-- زر طي Preview -->
+                        <button class="btn-icon panel-collapse-btn" data-panel-toggle="preview"
+                                id="panel-toggle-preview" title="إخفاء Preview (Alt+P)">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- تبويبات المعاينة -->
+                <div class="preview-tabs">
+                    <button class="tab-btn active" onclick="switchPreviewTab('visual')">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Result</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchPreviewTab('code')">
+                        <i class="fa-solid fa-code"></i>
+                        <span>Code</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchPreviewTab('console')">
+                        <i class="fa-solid fa-terminal"></i>
+                        <span>Console</span>
+                    </button>
+                </div>
+
+                <!-- النتيجة المرئية -->
+                <div id="visual-preview" class="preview-pane active">
+                    <div class="iframe-wrapper" id="iframe-wrapper">
+                        <iframe id="preview-iframe" sandbox="allow-scripts allow-modals"></iframe>
+                    </div>
+                </div>
+
+                <!-- عرض الكود -->
+                <div id="code-preview" class="preview-pane" style="display:none;">
+                    <button id="btn-copy-code" class="btn btn-primary btn-sm"
+                            style="position:sticky;top:0.5rem;float:left;margin:0.5rem;z-index:5;">
+                        <i class="fa-solid fa-copy"></i> Copy
+                    </button>
+                    <pre><code id="live-code-view" class="language-html"></code></pre>
+                </div>
+
+                <!-- الكونسول -->
+                <div id="console-preview" class="preview-pane console-pane" style="display:none;">
+                    <div class="console-toolbar">
+                        <span>Console</span>
+                        <button onclick="document.getElementById('console-output').innerHTML=''">
+                            <i class="fa-solid fa-ban"></i> Clear
+                        </button>
+                    </div>
+                    <div id="console-output"></div>
+                </div>
+
+                <!-- تلميح لوحة المفاتيح -->
+                <div class="panel-kbd-hint">
+                    <kbd>Alt</kbd>+<kbd>P</kbd> إظهار/إخفاء
+                </div>
+            </section>
+
+        </div><!-- /editor-layout -->
+        
+        <!-- Templates Modal -->
+        <div id="templates-modal" class="modal-overlay">
+            <div class="modal-content templates-modal-content">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-layer-group"></i> مكتبة القوالب الجاهزة</h2>
+                    <button class="btn-icon" onclick="document.getElementById('templates-modal').classList.remove('active')">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body" id="templates-grid">
+                    <!-- Templates will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Modal -->
+        <div id="projects-modal" class="modal-overlay">
+            <div class="modal-content projects-modal-content">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-diagram-project"></i> مدير المشاريع</h2>
+                    <div>
+                        <button class="btn btn-primary btn-sm" onclick="ProjectsManager.startNewProject()">
+                            <i class="fa-solid fa-plus"></i> مشروع جديد
+                        </button>
+                        <button class="btn-icon" onclick="document.getElementById('projects-modal').classList.remove('active')" style="margin-right:10px;">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body" id="projects-grid">
+                    <!-- Projects will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+    <!-- ===== السكريبتات ===== -->
+    <script src="js/storage.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/blocks.js"></script>
+    <script src="js/templates.js"></script>
+    <script src="js/projects.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/dom-tree.js"></script>
+    <script src="js/achievements.js"></script>
+    <script src="js/lessons.js"></script>
+    <script src="js/preview.js"></script>
+    <script src="js/dragdrop.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
