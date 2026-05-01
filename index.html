@@ -10,6 +10,8 @@
     <!-- Highlight.js للـ Syntax Highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
 </head>
 <body>
     <header class="navbar">
@@ -183,6 +185,13 @@
                             <input type="file" id="btn-load-json" accept=".json" style="display:none;">
                         </label>
 
+                        <button id="btn-code-mode" class="btn btn-secondary btn-sm" title="Switch to Code Mode (Monaco Editor)" onclick="CodeEditorManager.toggle()">
+                            <i class="fa-solid fa-code"></i>
+                            <span class="btn-text">Code</span>
+                        </button>
+
+                        <div class="action-divider"></div>
+
                         <button id="btn-share" class="btn btn-info btn-sm" title="Share Project">
                             <i class="fa-solid fa-share-nodes"></i>
                             <span class="btn-text">Share</span>
@@ -238,6 +247,52 @@
                             <i class="fa-solid fa-trash"></i> Delete
                         </button>
                     </div>
+                </div>
+            </section>
+
+            <!-- ══════ Monaco Code Editor Panel ══════ -->
+            <section class="panel code-editor-panel" id="code-editor-panel" style="display:none; flex-direction:column; flex:1; min-width:0;">
+                <!-- Header -->
+                <div class="panel-header" style="gap:8px; flex-shrink:0;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-code" style="color:var(--primary)"></i>
+                        <span class="panel-label">Code Editor</span>
+                        <span style="font-size:0.7rem; background:var(--primary); color:#fff; padding:2px 8px; border-radius:20px;">Monaco</span>
+                    </div>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <!-- Language Tabs -->
+                        <div class="preview-tabs" style="border-bottom:none; gap:4px;">
+                            <button id="code-tab-html" class="tab-btn active" onclick="CodeEditorManager.switchTab('html')" style="padding:4px 12px; font-size:0.8rem;">
+                                <i class="fa-brands fa-html5" style="color:#f97316"></i> HTML
+                            </button>
+                            <button id="code-tab-css" class="tab-btn" onclick="CodeEditorManager.switchTab('css')" style="padding:4px 12px; font-size:0.8rem;">
+                                <i class="fa-brands fa-css3-alt" style="color:#3b82f6"></i> CSS
+                            </button>
+                            <button id="code-tab-js" class="tab-btn" onclick="CodeEditorManager.switchTab('js')" style="padding:4px 12px; font-size:0.8rem;">
+                                <i class="fa-brands fa-js" style="color:#eab308"></i> JS
+                            </button>
+                        </div>
+                        <div class="action-divider"></div>
+                        <button class="btn btn-secondary btn-sm" onclick="CodeEditorManager.formatCode()" title="Format Code (Ctrl+Shift+F)">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span class="btn-text">Format</span>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="CodeEditorManager.toggle()" title="Back to Blocks Mode">
+                            <i class="fa-solid fa-cubes"></i>
+                            <span class="btn-text">Blocks</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Editors -->
+                <div style="flex:1; position:relative; overflow:hidden;">
+                    <div id="monaco-html" style="width:100%; height:100%; display:block;"></div>
+                    <div id="monaco-css"  style="width:100%; height:100%; display:none;"></div>
+                    <div id="monaco-js"   style="width:100%; height:100%; display:none;"></div>
+                </div>
+                <!-- Status Bar -->
+                <div style="background:var(--primary); color:#fff; padding:3px 12px; font-size:0.72rem; display:flex; gap:16px; flex-shrink:0;">
+                    <span>⚡ Monaco Editor</span>
+                    <span>Ctrl+Enter: تحديث | Ctrl+Shift+F: تنسيق</span>
                 </div>
             </section>
 
@@ -379,6 +434,7 @@
     <script src="js/dragdrop.js"></script>
     <script src="js/layout.js"></script>
     <script src="js/router.js"></script>
+    <script src="js/editor.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

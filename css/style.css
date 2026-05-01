@@ -1646,3 +1646,43 @@ body.is-resizing iframe    { pointer-events: none !important; }
     display: none !important;
 }
 
+/* ═══════════════════════════════════════════
+   Monaco Code Editor — Styles
+   ═══════════════════════════════════════════ */
+.code-editor-panel {
+    background: #0D1B2A;
+    border-left: 1px solid var(--border-color);
+}
+
+#btn-code-mode.active {
+    background: linear-gradient(135deg, #6366f1, #a855f7) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+}
+
+#monaco-html, #monaco-css, #monaco-js {
+    width: 100%;
+    height: 100%;
+}
+
+#code-tab-html.active { border-bottom-color: #f97316 !important; color: #f97316 !important; }
+#code-tab-css.active  { border-bottom-color: #3b82f6 !important; color: #3b82f6 !important; }
+#code-tab-js.active   { border-bottom-color: #eab308 !important; color: #eab308 !important; }
+
+.code-editor-panel .panel-header {
+    background: rgba(13, 27, 42, 0.95);
+    border-bottom: 1px solid rgba(99,102,241,0.3);
+}
+
+/* Semantic category block */
+.block[data-category="Semantic"] {
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+}
+
+/* Celebration animation */
+@keyframes bounceIn {
+    0%   { transform: scale(0.3); opacity: 0; }
+    50%  { transform: scale(1.1); }
+    70%  { transform: scale(0.9); }
+    100% { transform: scale(1);   opacity: 1; }
+}

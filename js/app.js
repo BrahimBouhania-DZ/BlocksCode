@@ -3,6 +3,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     updateXPDisplay();
     
+    // تهيئة Monaco Code Editor
+    if (window.CodeEditorManager) {
+        setTimeout(() => CodeEditorManager.init(), 500);
+    }
+    
     // زر تبديل المظهر
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
@@ -213,6 +218,7 @@ function createBlockUI(block, state) {
     // Color-code by category
     const catColors = {
         'Structure':   'linear-gradient(135deg,#6366f1,#4f46e5)',
+        'Semantic':    'linear-gradient(135deg,#0ea5e9,#0284c7)',
         'Lists':       'linear-gradient(135deg,#8b5cf6,#7c3aed)',
         'Tables':      'linear-gradient(135deg,#06b6d4,#0891b2)',
         'Text':        'linear-gradient(135deg,#10b981,#059669)',
@@ -569,6 +575,38 @@ function renderInspector(state) {
         }
         if (block.tag === 'timer-timeout') {
             createInput('التأخير بالميلي ثانية (1000 = 1 ثانية)', block.attributes.delayMs || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'delayMs', val));
+        }
+        // ─── Inspector for New Advanced Blocks ───
+        if (block.tag === 'array-declare') {
+            createInput('اسم المصفوفة', block.attributes.varName || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'varName', val));
+            createInput('العناصر (مفصولة بفاصلة)', block.attributes.items || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'items', val));
+        }
+        if (block.tag === 'object-declare') {
+            createInput('اسم الكائن', block.attributes.varName || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'varName', val));
+            createInput('الخصائص (مثال: name: "Ali", age: 25)', block.attributes.keys || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'keys', val));
+        }
+        if (block.tag === 'func-declare') {
+            createInput('اسم الدالة', block.attributes.funcName || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'funcName', val));
+        }
+        if (block.tag === 'loop-foreach') {
+            createInput('اسم المصفوفة', block.attributes.arrayName || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'arrayName', val));
+            createInput('اسم المتغير للعنصر', block.attributes.itemName || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'itemName', val));
+        }
+        if (block.tag === 'try-catch') {
+            createInput('اسم متغير الخطأ', block.attributes.errorVar || 'error', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'errorVar', val));
+        }
+        if (block.tag === 'string-method') {
+            createInput('اسم المتغير الناتج', block.attributes.varName || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'varName', val));
+            createInput('المتغير المصدر', block.attributes.sourceVar || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'sourceVar', val));
+            createInput('الدالة (method)', block.attributes.method || '', (val) => AppState.updateBlockProperty(block.id, 'attributes', 'method', val), 'select', [
+                {value: 'toUpperCase', label: 'toUpperCase()'},
+                {value: 'toLowerCase', label: 'toLowerCase()'},
+                {value: 'trim', label: 'trim()'},
+                {value: 'length', label: '.length'},
+                {value: 'split(",")', label: 'split(",")'},
+                {value: 'includes("text")', label: 'includes("text")'},
+                {value: 'replace("old","new")', label: 'replace()'},
+            ]);
         }
     }
 }

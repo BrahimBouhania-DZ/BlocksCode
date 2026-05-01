@@ -73,7 +73,25 @@ const BlockDefinitions = [
     { type: "event", category: "JS Logic", label: "If  if (condition) { }", tag: "if-condition", icon: "fa-code-branch", hasChildren: true, attributes: { condition: "score > 5" } },
     { type: "event", category: "JS Logic", label: "For Loop  for(i=0; i<n; i++)", tag: "loop-for", icon: "fa-rotate-right", hasChildren: true, attributes: { times: "5" } },
     { type: "event", category: "JS Logic", label: "Timeout  setTimeout(fn, ms)", tag: "timer-timeout", icon: "fa-clock", hasChildren: true, attributes: { delayMs: "1000" } },
-    { type: "event", category: "JS Logic", label: "Fetch  fetch(url).then()", tag: "js-fetch", icon: "fa-cloud-arrow-down", hasChildren: true, attributes: { url: "https://jsonplaceholder.typicode.com/todos/1", varName: "apiData" } }
+    { type: "event", category: "JS Logic", label: "Fetch  fetch(url).then()", tag: "js-fetch", icon: "fa-cloud-arrow-down", hasChildren: true, attributes: { url: "https://jsonplaceholder.typicode.com/todos/1", varName: "apiData" } },
+
+    // ─── Semantic HTML (new) ─────────────────────────────────────
+    { type: "element", category: "Semantic", label: "Article  <article>",  tag: "article", icon: "fa-newspaper",    hasChildren: true },
+    { type: "element", category: "Semantic", label: "Aside    <aside>",    tag: "aside",   icon: "fa-sidebar",     hasChildren: true },
+    { type: "element", category: "Semantic", label: "Main     <main>",     tag: "main",    icon: "fa-house",       hasChildren: true },
+    { type: "element", category: "Semantic", label: "Figure   <figure>",   tag: "figure",  icon: "fa-image",       hasChildren: true },
+    { type: "element", category: "Semantic", label: "Figcaption <figcaption>", tag: "figcaption", icon: "fa-align-left", hasChildren: false, innerText: "Caption" },
+
+    // ─── CSS Grid (new) ─────────────────────────────────────────
+    { type: "element", category: "Structure", label: "Grid  <div style='display:grid'>", tag: "div", icon: "fa-th", hasChildren: true, styles: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px" } },
+
+    // ─── JS Advanced Blocks (new) ────────────────────────────────
+    { type: "logic", category: "JS Logic", label: "Array  let arr = []",      tag: "array-declare",  icon: "fa-list",           hasChildren: false, attributes: { varName: "myArray",  items: "'item1', 'item2', 'item3'" } },
+    { type: "logic", category: "JS Logic", label: "Object  let obj = {}",     tag: "object-declare", icon: "fa-cube",           hasChildren: false, attributes: { varName: "myObject", keys: "name: 'Ali', age: 25" } },
+    { type: "event", category: "JS Logic", label: "Function  function() {}", tag: "func-declare",   icon: "fa-f",             hasChildren: true,  attributes: { funcName: "myFunction" } },
+    { type: "event", category: "JS Logic", label: "forEach  arr.forEach()",  tag: "loop-foreach",  icon: "fa-arrows-rotate", hasChildren: true,  attributes: { arrayName: "myArray", itemName: "item" } },
+    { type: "event", category: "JS Logic", label: "Try/Catch  try {} catch{}",tag: "try-catch",     icon: "fa-shield-halved", hasChildren: true,  attributes: { errorVar: "error" } },
+    { type: "logic", category: "JS Logic", label: "String Method  str.method()", tag: "string-method", icon: "fa-text-slash", hasChildren: false, attributes: { varName: "result", sourceVar: "myStr", method: "toUpperCase" } }
 ];
 
 // ─────────────────────────────────────────────
@@ -185,6 +203,35 @@ function generateCode(blocks) {
                     js += `${indent}  let ${b.attributes.varName} = typeof data === 'object' ? JSON.stringify(data) : data;\n`;
                     if (b.children) b.children.forEach(c => js += processJSBlock(c, indent + "  "));
                     js += `${indent}}).catch(err => console.error(err));\n`;
+                }
+                // ── New Advanced Blocks ──
+                if (b.tag === "array-declare") {
+                    js += `${indent}let ${b.attributes.varName} = [${b.attributes.items}];\n`;
+                }
+                if (b.tag === "object-declare") {
+                    js += `${indent}let ${b.attributes.varName} = { ${b.attributes.keys} };\n`;
+                }
+                if (b.tag === "func-declare") {
+                    js += `${indent}function ${b.attributes.funcName}() {\n`;
+                    if (b.children) b.children.forEach(c => js += processJSBlock(c, indent + "  "));
+                    js += `${indent}}\n`;
+                    js += `${indent}${b.attributes.funcName}();\n`;
+                }
+                if (b.tag === "loop-foreach") {
+                    js += `${indent}${b.attributes.arrayName}.forEach(function(${b.attributes.itemName}) {\n`;
+                    if (b.children) b.children.forEach(c => js += processJSBlock(c, indent + "  "));
+                    js += `${indent}});\n`;
+                }
+                if (b.tag === "try-catch") {
+                    js += `${indent}try {\n`;
+                    if (b.children) b.children.forEach(c => js += processJSBlock(c, indent + "  "));
+                    js += `${indent}} catch(${b.attributes.errorVar}) {\n`;
+                    js += `${indent}  console.error('Error:', ${b.attributes.errorVar}.message);\n`;
+                    js += `${indent}}\n`;
+                }
+                if (b.tag === "string-method") {
+                    js += `${indent}let ${b.attributes.varName} = ${b.attributes.sourceVar}.${b.attributes.method}();\n`;
+                    js += `${indent}console.log(${b.attributes.varName});\n`;
                 }
                 return js;
             };

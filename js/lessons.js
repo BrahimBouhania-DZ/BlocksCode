@@ -337,6 +337,294 @@ const LessonsData = [
         validator: (blocks) => {
             return blocks.some(b => b.tag === 'timer-timeout' && b.attributes.delayMs === '2000');
         }
+    },
+
+    // ==========================================
+    // مسار HTML المتقدم - دروس 11-15
+    // ==========================================
+    {
+        id: "html-11",
+        course: "HTML",
+        title: "الدرس 11: HTML الدلالي (Semantic)",
+        description: "المواقع الاحترافية تستخدم وسوماً دلالية تساعد محركات البحث وقارئات الشاشة على فهم هيكل الصفحة.",
+        goal: "أضف بلوك '<article>' وبلوك '<aside>' من فئة Semantic.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b => b.tag === 'article') && all.some(b => b.tag === 'aside');
+        }
+    },
+    {
+        id: "html-12",
+        course: "HTML",
+        title: "الدرس 12: الـ Figure والـ Figcaption",
+        description: "لعرض صورة مع تعليق وصفي نستخدم figure وfigcaption — وهذا أفضل لـ SEO من div عادي.",
+        goal: "أضف بلوك '<figure>' وضع بداخله '<img>' و'<figcaption>'.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            const fig = all.find(b => b.tag === 'figure');
+            if (!fig || !fig.children) return false;
+            return fig.children.some(c => c.tag === 'img') && fig.children.some(c => c.tag === 'figcaption');
+        }
+    },
+    {
+        id: "html-13",
+        course: "HTML",
+        title: "الدرس 13: حقول الإدخال المتقدمة",
+        description: "HTML5 أضاف أنواعاً جديدة من حقول الإدخال تتحقق من البيانات تلقائياً.",
+        goal: "أضف حقل '<input>' وغير نوعه إلى 'number' أو 'date' أو 'range' من المفتش.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b => b.tag === 'input' && ['number','date','range','color','tel','url'].includes(b.attributes.type));
+        }
+    },
+    {
+        id: "html-14",
+        course: "HTML",
+        title: "الدرس 14: القائمة المنسدلة الديناميكية",
+        description: "عنصر Select مع Options يبني قائمة منسدلة — أساس كل نموذج ويب احترافي.",
+        goal: "أضف بلوك '<select>' وضع بداخله 3 عناصر '<option>' على الأقل.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            const sel = all.find(b => b.tag === 'select');
+            return sel && sel.children && sel.children.filter(c => c.tag === 'option').length >= 3;
+        }
+    },
+    {
+        id: "html-15",
+        course: "HTML",
+        title: "الدرس 15: تضمين الفيديو والصوت",
+        description: "HTML5 يدعم تشغيل الوسائط مباشرة في المتصفح بدون Flash.",
+        goal: "أضف بلوك '<video>' أو '<audio>' من فئة Media.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b => b.tag === 'video' || b.tag === 'audio');
+        }
+    },
+
+    // ==========================================
+    // مسار CSS المتقدم - دروس 11-20
+    // ==========================================
+    {
+        id: "css-11",
+        course: "CSS",
+        title: "الدرس 11: شبكة CSS Grid",
+        description: "CSS Grid هو أقوى نظام لتوزيع العناصر في صفوف وأعمدة معاً — مختلف عن Flex.",
+        goal: "أضف بلوك 'Grid' من فئة Structure (display:grid). ضع بداخله 3 عناصر div على الأقل.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            const grid = all.find(b => b.styles && b.styles.display === 'grid');
+            return grid && grid.children && grid.children.length >= 3;
+        }
+    },
+    {
+        id: "css-12",
+        course: "CSS",
+        title: "الدرس 12: متغيرات CSS",
+        description: "متغيرات CSS (Custom Properties) تسمح لك بتعريف قيم مرة واحدة واستخدامها في كل مكان.",
+        goal: "أضف بلوك 'CSS Raw' من Custom Code واكتب متغيراً مثل: :root { --primary: #6366f1; }",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b => b.tag === 'custom-css' && b.attributes.rawCode && b.attributes.rawCode.includes('--'));
+        }
+    },
+    {
+        id: "css-13",
+        course: "CSS",
+        title: "الدرس 13: الموضع الثابت (Position Fixed)",
+        description: "العناصر ذات position:fixed تبقى في مكانها حتى عند التمرير — مثال: شريط التنقل.",
+        goal: "أضف '<div>' وعيّن له تنسيق CSS بالمُحدد '.navbar'. أضف position: fixed فيه.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b => b.tag === 'css-rule' && b.styles && b.styles.position === 'fixed');
+        }
+    },
+    {
+        id: "css-14",
+        course: "CSS",
+        title: "الدرس 14: تأثير Glassmorphism",
+        description: "أسلوب التصميم الأكثر شيوعاً في 2024 — زجاج شفاف بتأثير ضبابي رائع.",
+        goal: "أضف تنسيق '.glass' وضع فيه: background مع rgba وbackdrop-filter: blur. اكتبه في Custom CSS.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b =>
+                b.tag === 'custom-css' && b.attributes.rawCode &&
+                b.attributes.rawCode.includes('backdrop-filter') &&
+                b.attributes.rawCode.includes('blur')
+            );
+        }
+    },
+    {
+        id: "css-15",
+        course: "CSS",
+        title: "الدرس 15: Pseudo-elements قبل وبعد",
+        description: "::before و::after يضيفان محتوى زخرفياً دون تغيير الـ HTML — سر الكثير من التصاميم الجميلة.",
+        goal: "أضف في Custom CSS قاعدة تستخدم '::before' أو '::after' مع content.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b =>
+                b.tag === 'custom-css' && b.attributes.rawCode &&
+                (b.attributes.rawCode.includes('::before') || b.attributes.rawCode.includes('::after')) &&
+                b.attributes.rawCode.includes('content')
+            );
+        }
+    },
+    {
+        id: "css-16",
+        course: "CSS",
+        title: "الدرس 16: تأثيرات الفلتر",
+        description: "خاصية filter تضيف تأثيرات بصرية مذهلة مثل التعتيم، تدرج الرمادي، والإضاءة.",
+        goal: "أضف تنسيق CSS لعنصر img. أضف فيه filter: grayscale(100%) أو blur() باستخدام Custom CSS.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b =>
+                b.tag === 'custom-css' && b.attributes.rawCode &&
+                b.attributes.rawCode.includes('filter')
+            );
+        }
+    },
+    {
+        id: "css-17",
+        course: "CSS",
+        title: "الدرس 17: Keyframes والأنيميشن",
+        description: "@keyframes تُعرّف مراحل الحركة — من نقطة البداية إلى النهاية.",
+        goal: "أضف في Custom CSS قاعدة @keyframes باسم اختياري، ثم طبّق animation على عنصر.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b =>
+                b.tag === 'custom-css' && b.attributes.rawCode &&
+                b.attributes.rawCode.includes('@keyframes')
+            );
+        }
+    },
+    {
+        id: "css-18",
+        course: "CSS",
+        title: "الدرس 18: تحسين الصور للشاشات",
+        description: "object-fit تتحكم في كيفية احتواء الصورة داخل إطارها — مثل cover و contain.",
+        goal: "أضف '<img>' وفي تنسيقه اجعل object-fit: cover وعيّن له ارتفاعاً ثابتاً.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b =>
+                b.tag === 'custom-css' && b.attributes.rawCode &&
+                b.attributes.rawCode.includes('object-fit')
+            ) || all.some(b =>
+                b.tag === 'css-rule' && b.styles && b.styles.objectFit
+            );
+        }
+    },
+    {
+        id: "css-19",
+        course: "CSS",
+        title: "الدرس 19: منهجية BEM",
+        description: "BEM (Block__Element--Modifier) طريقة تسمية احترافية للفئات تجعل الكود منظماً وقابلاً للصيانة.",
+        goal: "أضف '<div>' وعيّن له class مثل 'card__title' أو 'btn--primary' في المفتش.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b => b.attributes && b.attributes.class &&
+                (b.attributes.class.includes('__') || b.attributes.class.includes('--'))
+            );
+        }
+    },
+    {
+        id: "css-20",
+        course: "CSS",
+        title: "الدرس 20: مشروع — بطاقة احترافية",
+        description: "الآن طبّق كل ما تعلمته: اصنع بطاقة (card) كاملة باستخدام Flexbox، ظل، استدارة، وتأثير hover.",
+        goal: "أنشئ '<div>' بفئة 'card' يحتوي على صورة وعنوان وفقرة وزر. أضف تنسيقات hover وtransition.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            const card = all.find(b => b.tag === 'div' && b.attributes && b.attributes.class === 'card');
+            if (!card || !card.children) return false;
+            const hasImg = card.children.some(c => c.tag === 'img');
+            const hasText = card.children.some(c => ['h1','h2','h3','p'].includes(c.tag));
+            const hasBtn = card.children.some(c => c.tag === 'button' || c.tag === 'a');
+            return hasImg && hasText && hasBtn;
+        }
+    },
+
+    // ==========================================
+    // مسار JS المتقدم - دروس 11-15
+    // ==========================================
+    {
+        id: "js-11",
+        course: "JS",
+        title: "الدرس 11: المصفوفات (Arrays)",
+        description: "المصفوفة قائمة مرتبة من العناصر — مثل قائمة أسماء الطلاب أو نقاط اللعبة.",
+        goal: "أضف بلوك 'Array' من JS Logic. سمّه 'students' وأضف 3 عناصر على الأقل.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b => b.tag === 'array-declare' && b.attributes.varName === 'students');
+        }
+    },
+    {
+        id: "js-12",
+        course: "JS",
+        title: "الدرس 12: الكائنات (Objects)",
+        description: "الكائن مجموعة من خصائص ذات أسماء وقيم — مثل بيانات مستخدم: الاسم والعمر.",
+        goal: "أضف بلوك 'Object' وسمّه 'user'. أضف فيه على الأقل خاصيتين مثل: name وage.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b =>
+                b.tag === 'object-declare' &&
+                b.attributes.varName === 'user' &&
+                b.attributes.keys && b.attributes.keys.includes(':')
+            );
+        }
+    },
+    {
+        id: "js-13",
+        course: "JS",
+        title: "الدرس 13: الدوال (Functions)",
+        description: "الدوال كتلة كود قابلة لإعادة الاستخدام — اكتبها مرة واستدعها متى شئت.",
+        goal: "أضف بلوك 'Function' وسمّه 'greet'. ضع بداخله بلوك Alert.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            const fn = all.find(b => b.tag === 'func-declare' && b.attributes.funcName === 'greet');
+            return fn && fn.children && fn.children.some(c => c.tag === 'alert' || c.tag === 'console-log');
+        }
+    },
+    {
+        id: "js-14",
+        course: "JS",
+        title: "الدرس 14: التكرار على المصفوفات (forEach)",
+        description: "forEach تمر على كل عنصر في المصفوفة وتنفّذ عليه كوداً — بديل أنيق عن حلقة for.",
+        goal: "أضف بلوك 'forEach'. استهدف مصفوفة موجودة وضع بداخله Console Log.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            const fe = all.find(b => b.tag === 'loop-foreach');
+            return fe && fe.children && fe.children.length > 0;
+        }
+    },
+    {
+        id: "js-15",
+        course: "JS",
+        title: "الدرس 15: معالجة الأخطاء (Try/Catch)",
+        description: "الكود الاحترافي يتوقع الأخطاء ويتعامل معها بدلاً من تعطّل التطبيق.",
+        goal: "أضف بلوك 'Try/Catch'. ضع بداخله أي كود وتأكد أن الـ catch موجود.",
+        validator: (blocks) => {
+            const flat = (arr) => arr.flatMap(b => [b, ...(b.children ? flat(b.children) : [])]);
+            const all = flat(blocks);
+            return all.some(b => b.tag === 'try-catch');
+        }
     }
 ];
 

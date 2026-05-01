@@ -23,6 +23,42 @@ const QuizData = [
             { q: "ماذا تفعل الدالة alert()؟", options: ["إخفاء عنصر", "إظهار رسالة منبثقة", "تغيير اللون", "حذف الكود"], answer: 1 },
             { q: "كيف نكتب تعليقاً في JavaScript؟", options: ["<!-- تعليق -->", "/* تعليق */", "// تعليق", "** تعليق"], answer: 2 }
         ]
+    },
+    // Quiz for HTML lessons 11-15
+    {
+        afterLesson: 20,
+        questions: [
+            { q: "ما الوسم الصحيح لعرض صورة مع تعليق وصفي؟", options: ["<div>", "<figure>", "<section>", "<picture>"], answer: 1 },
+            { q: "أي وسم يُستخدم للمحتوى الجانبي في الصفحة؟", options: ["<nav>", "<footer>", "<aside>", "<span>"], answer: 2 },
+            { q: "ما نوع الـ input الذي يعرض منتقي تاريخ؟", options: ["type='calendar'", "type='date'", "type='picker'", "type='time'"], answer: 1 }
+        ]
+    },
+    // Quiz for CSS lessons 11-20
+    {
+        afterLesson: 30,
+        questions: [
+            { q: "ما الخاصية المستخدمة لإنشاء تخطيط شبكي (Grid)?", options: ["display: flex", "display: block", "display: grid", "display: table"], answer: 2 },
+            { q: "كيف نعرّف متغير CSS مخصص؟", options: ["$color: red", "--color: red", "@color: red", "#color: red"], answer: 1 },
+            { q: "أي خاصية CSS تُنشئ تأثير الزجاج الضبابي (Glassmorphism)؟", options: ["blur-filter", "backdrop-filter: blur()", "background-blur", "opacity-filter"], answer: 1 }
+        ]
+    },
+    // Quiz for JS lessons 11-15
+    {
+        afterLesson: 40,
+        questions: [
+            { q: "كيف نُنشئ مصفوفة فارغة في JavaScript؟", options: ["let arr = {}", "let arr = []", "let arr = ()", "let arr = new List()"], answer: 1 },
+            { q: "ما الفرق بين المصفوفة والكائن؟", options: ["لا فرق بينهما", "المصفوفة تستخدم أرقاماً والكائن يستخدم مفاتيح نصية", "الكائن أسرع دائماً", "المصفوفة لا تدعم النصوص"], answer: 1 },
+            { q: "ما الكلمة المفتاحية لتعريف دالة؟", options: ["def", "func", "function", "method"], answer: 2 }
+        ]
+    },
+    // Quiz for CSS Animations + Advanced
+    {
+        afterLesson: 50,
+        questions: [
+            { q: "ما الـ At-rule المستخدم لتعريف أنيميشن في CSS؟", options: ["@animation", "@keyframes", "@transition", "@motion"], answer: 1 },
+            { q: "ما قيمة transition للحصول على حركة سلسة بمدة نصف ثانية؟", options: ["0.5s ease", "500ms linear", "كلاهما صحيح ✅", "لا شيء مما سبق"], answer: 2 },
+            { q: "ما منهجية تسمية الفئات في CSS التي تستخدم __ و --؟", options: ["SMACSS", "OOCSS", "BEM", "Atomic CSS"], answer: 2 }
+        ]
     }
 ];
 
